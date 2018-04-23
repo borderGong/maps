@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>google maps</title>
+	<link rel="stylesheet" href="./index.css">
+	<meta charset="utf-8">
+</head>
+<body>
+	<div id="root" class="container">
+		<section class="menu" data-bind="style: { display: showMenu() ? 'block' : 'none' }">
+			<h1 class="menu-logo">我的</h1>
+			<div class="filter">
+				<input id="filter" class="filter-input">
+				<button data-bind="click: filterItem" class="filter-button">filter</button>
+			</div>
+			<ul class="list" data-bind="foreach: items">
+				<li class="item" data-bind="text: title, click: $parent.clickItem"></li>
+			</ul>
+		</section>
+		<section class="main">
+			<div class="page-top">
+				<div data-bind="click: toggleMenu" class="page-menu"></div>
+			</div>
+			<div class="map" id="map"></div>
+		</section>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-debug.js"></script>
+<!-- <script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-min.js"></script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACu_OoClylQmszcJRW6q26vrZzCclga4g&libraries=drawing,geometry&callback=initMap"
+	async defer></script>
+<script src="./app.js"></script>
+</html>

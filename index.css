@@ -1,0 +1,57 @@
+body, ul, li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.container {
+    display: flex;
+}
+.menu {
+    width: 200px;
+    background: #000;
+    height: 100vh;
+}
+.main {
+    flex: 1;
+}
+.menu-logo {
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    color: #f9f9f9;
+    font-size: 20px;
+}
+.filter {
+    display: flex;
+    background: lightblue;
+}
+.filter-input {
+    flex: 1;
+}
+.filter-button {
+    background: lightblue;
+}
+.page-top {
+    border-top: 1px #333 solid;
+    height: 100px;
+    background: #333;
+}
+.page-menu {
+    margin: 35px 0 0 35px;
+    width: 30px;
+    height: 30px;
+    background: url(./static/menu.svg) no-repeat;
+    background-size: contain;
+    cursor: pointer;
+}
+.map {
+    width: 100%;
+    height: calc(100vh - 100px);
+}
+
+.item {
+    margin: 20px 0;
+    padding-left: 20px;
+    color: #999;
+    cursor: pointer;
+}
