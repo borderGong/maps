@@ -1,35 +1,45 @@
+// 地图加载错误信息
+function mapErrorHandler(){
+    document.querySelector('#map').innerHTML = '地图加载错误，请刷新重试';
+}
 // 定义map
 let map, markers, infowindow;
 const points = [
     {
         title: '故宫博物院',
         lat: 39.9176718710,
-        lng: 116.3971864841
+        lng: 116.3971864841,
+        pinyin: 'gugong'
     },
     {
         title: '景山公园',
         lat: 39.9264914074,
-        lng: 116.3965786593
+        lng: 116.3965786593,
+        pinyin: 'jingshan'
     },
     {
         title: '北海公园',
         lat: 39.9272692029,
-        lng: 116.3886708770
+        lng: 116.3886708770,
+        pinyin: 'beihaigongyuan',
     },
     {
         title: '国家大剧院',
         lat: 39.9048340787,
-        lng: 116.3897190553
+        lng: 116.3897190553,
+        pinyin: 'guojiadajuyuan'
     },
     {
         title: '中山公园',
         lat: 39.9117461163,
         lng: 116.3948672466,
+        pinyin: 'zhongshangongyuan',
     },
     {
         title: '西单大悦城',
         lat: 39.9105338820,
-        lng: 116.3732057966
+        lng: 116.3732057966,
+        pinyin: 'xidandayuecheng',
     }
 ];
 function initMap(){
@@ -51,13 +61,14 @@ function initMap(){
     });
     markers.forEach(item => {
         item.addListener('click', function() {
-            fetchAddressInfo(item.position.lat(), item.position.lng())
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response);
+            const pinyin = points.filter(point => point.title === item.title)[0].pinyin;
+            Promise.all([fetchAddressInfo(item.position.lat(), item.position.lng()), fetchAddressDesction(pinyin)])
+                // .then(([response1, response2]) => [response1.json(), response2])
+                .then(([res1, res2]) => {
+                    console.log(res1, res2);
                     let content;
-                    if(response.status === 'OK'){
-                        content = `${item.title}: ${response.results[0].formatted_address}`;
+                    if(res1.status === 'OK' && res2.status === 'Success'){
+                        content = `${item.title}: ${res1.results[0].formatted_address} ${res2.result.abstract}`;
                     }else{
                         content = '获取详细地址失败！';
                     }
@@ -68,9 +79,24 @@ function initMap(){
           });
     })
 };
+// 获取google地理位置信息
 function fetchAddressInfo(lat, lng){
-    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyACu_OoClylQmszcJRW6q26vrZzCclga4g`);
+    return new Promise((reslove, reject) => {
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyACu_OoClylQmszcJRW6q26vrZzCclga4g`)
+            .then(response => response.json())
+            .then(result => reslove(result))
+            .catch(err => reject(err));
+    })
 }
+// 获取景点描述信息
+function fetchAddressDesction(addressName){
+    return new Promise((reslove, reject) => {
+        $.getJSON(`http://api.map.baidu.com/telematics/v3/travel_attractions?id=${addressName}&ak=XuKznZr3l5b1aIS4S5MYjvSh&output=json&callback=?`)
+        .done(res => reslove(res))
+        .fail(err => reject(err))
+    });
+}
+
 (function init(){
     const PointerModel = function(items) {
         this.showMenu = ko.observable(true);
@@ -113,3 +139,4 @@ function fetchAddressInfo(lat, lng){
      
     ko.applyBindings(new PointerModel(points.slice()));
 })();
+

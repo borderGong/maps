@@ -4,6 +4,7 @@
 	<title>google maps</title>
 	<link rel="stylesheet" href="./index.css">
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 	<div id="root" class="container">
@@ -25,9 +26,10 @@
 		</section>
 	</div>
 </body>
-<script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-debug.js"></script>
-<!-- <script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-min.js"></script> -->
+<!-- <script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-debug.js"></script> -->
+<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACu_OoClylQmszcJRW6q26vrZzCclga4g&libraries=drawing,geometry&callback=initMap"
-	async defer></script>
+	async defer onerror="mapErrorHandler()"></script>
 <script src="./app.js"></script>
 </html>
