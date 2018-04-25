@@ -62,15 +62,15 @@ function initMap(){
     markers.forEach(item => {
         item.addListener('click', function() {
             const pinyin = points.filter(point => point.title === item.title)[0].pinyin;
-            Promise.all([fetchAddressInfo(item.position.lat(), item.position.lng()), fetchAddressDesction(pinyin)])
                 // .then(([response1, response2]) => [response1.json(), response2])
+            fetchApiInfo(item.position.lat(), item.position.lng(), pinyin)
                 .then(([res1, res2]) => {
                     console.log(res1, res2);
                     let content;
                     if(res1.status === 'OK' && res2.status === 'Success'){
                         content = `${item.title}: ${res1.results[0].formatted_address} ${res2.result.abstract}`;
                     }else{
-                        content = '获取详细地址失败！';
+                        content = '获取信息失败！';
                     }
                     infowindow.setContent(content);
                     infowindow.open(map, item);
@@ -96,6 +96,10 @@ function fetchAddressDesction(addressName){
         .fail(err => reject(err))
     });
 }
+// 封装获取两个api信息
+function fetchApiInfo(lat, lng, pinyinName){
+    return Promise.all([fetchAddressInfo(lat, lng), fetchAddressDesction(pinyinName)])
+}
 
 (function init(){
     const PointerModel = function(items) {
@@ -117,15 +121,13 @@ function fetchAddressDesction(addressName){
         this.clickItem = function(e){
             const index = points.findIndex(item => item.title === e.title);
             const item = markers[index];
-            fetchAddressInfo(item.position.lat(), item.position.lng())
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response);
+            fetchApiInfo(item.position.lat(), item.position.lng(), points[index].pinyin)
+                .then(([res1, res2]) => {
                     let content;
-                    if(response.status === 'OK'){
-                        content = `${item.title}: ${response.results[0].formatted_address}`;
+                    if(res1.status === 'OK' && res2.status === 'Success'){
+                        content = `${item.title}: ${res1.results[0].formatted_address} ${res2.result.abstract}`;
                     }else{
-                        content = '获取详细地址失败！';
+                        content = '获取信息失败！';
                     }
                     infowindow.setContent(content);
                     infowindow.open(map, item);
